@@ -16,7 +16,7 @@ namespace tcp
 		/// </summary>
 		const int BUFSIZE = 1000;
 		//make the buffer
-		byte[] buff = new byte[BUFSIZE];
+
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="file_client"/> class.
@@ -53,27 +53,36 @@ namespace tcp
 		/// </param>
 		private void receiveFile (String fileName, NetworkStream io)
 		{
-			io.Flush ();
-			Console.WriteLine ("started recevicing file");
-			buff = System.Text.Encoding.ASCII.GetBytes (fileName + "\0");
+			long fileSize = 0;
+			//make byte array
+			Byte[] buff = new Byte[BUFSIZE];
 
-			//tell server what file we want!
-			io.Write (buff, 0, buff.Length);
-
-
-
-
-			string text = System.Text.Encoding.ASCII.GetString(buff);
-			
-
-			Console.WriteLine ("sended the request " + text);
-			//modtag fil størrelse
-
-			//modtag efter fil størrelse (10)
+			//tell what file we want
+			tcp.LIB.writeTextTCP (io, fileName);
 		
-			int size = io.Read (buff, 0, buff.Length);
-			Console.WriteLine ("filesize is: " + size);
-			Console.WriteLine (System.Text.Encoding.ASCII.GetString(buff));
+
+			//modtag fil størrelse
+			fileSize = Int32.Parse( tcp.LIB.readTextTCP(io));
+			Console.WriteLine ("size is " + fileSize);
+
+
+			//modtag fil
+			int bytesReceived = 0;
+			FileStream fs = new FileStream(fileName,FileMode.OpenOrCreate,FileAccess.Write);
+
+			for (int i = 0 ; i < fileSize/BUFSIZE ; i+=BUFSIZE)
+				{
+					bytesReceived += io.Read (buff, i, buff.Length);
+					fs.Write (buff,i,BUFSIZE);
+				}
+				bytesReceived += io.Read (buff, bytesReceived , buff.Length);
+				fs.Write (buff, bytesReceived,BUFSIZE);
+
+			//gem fil
+
+
+
+			fs.Close ();
 		}
 
 		/// <summary>
