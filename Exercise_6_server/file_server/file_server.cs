@@ -17,6 +17,7 @@ namespace tcp
 		const int BUFSIZE = 1000;
 		IPAddress localAddr = IPAddress.Parse("10.0.0.1");
 		byte[] buff = new byte[BUFSIZE];
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="file_server"/> class.
 		/// Opretter en socket.
@@ -44,7 +45,7 @@ namespace tcp
 			Console.WriteLine(" >> Accepted connection from client");
 
 			//modtager filnavn
-			string fileDir = @"/root/Desktop/Exercise_6_c#/file_server/bin/Debug/files/";
+			string fileDir = @"/root/Desktop/IKNServerClientTCP/Exercise_6_server/file_server/bin/Debug/files/";
 			string userfile = tcp.LIB.readTextTCP (serverStreamIO);
 
 			fileDir += userfile;
@@ -56,7 +57,6 @@ namespace tcp
 				Console.WriteLine("filen findes " + fileDir);
 				//find størrelsen på filen
 				long filesize = new System.IO.FileInfo(fileDir).Length;
-				Console.WriteLine ("Her" + filesize);
 				//send the file
 				sendFile (fileDir, filesize, serverStreamIO);
 			}
@@ -84,18 +84,17 @@ namespace tcp
 		/// </param>
 		private void sendFile (String fileName, long fileSize, NetworkStream io)
 		{
-
-
 			//send filstørelse
+			tcp.LIB.writeTextTCP(io,fileSize.ToString());
 
-			//send flere gange (10 størrelse) 
+			FileStream fs = new FileStream (fileName, FileMode.Open);
 
-			buff = File.ReadAllBytes (fileName);
-			//sender filen
-			Console.WriteLine ("sended the fileContent: " + System.Text.Encoding.ASCII.GetString(buff));
-			io.Write (buff, 0, buff.Length);
 
-			Console.WriteLine (buff);
+			//write out
+			for (int i = 0; i < fileSize; i += BUFSIZE%1000) {
+				fs.Read (buff, i, BUFSIZE);
+				io.Write (buff, i, buff.Length);
+			}
 
 		}
 
