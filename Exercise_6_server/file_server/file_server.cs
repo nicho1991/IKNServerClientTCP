@@ -87,16 +87,26 @@ namespace tcp
 			//send filstørelse
 			tcp.LIB.writeTextTCP(io,fileSize.ToString());
 
-			FileStream fs = new FileStream (fileName, FileMode.Open);
+			FileStream fs = new FileStream (fileName, FileMode.Open, FileAccess.Read);
 
+			int numberOfPackages = Convert.ToInt32 (Math.Ceiling (Convert.ToDouble (fileSize) / Convert.ToDouble (BUFSIZE)));
+			long currentPacketLength = 0;
+			long totalLength = fileSize;
 
 			//write out
-			for (int i = 0; i < fileSize; i += BUFSIZE%1000) {
-				fs.Read (buff, i, BUFSIZE);
-				io.Write (buff, i, buff.Length);
-			}
+			for (int i = 0; i < fileSize; i += BUFSIZE) {
+				if (totalLength > BUFSIZE) {
+					currentPacketLength = BUFSIZE;
+					totalLength -= BUFSIZE;
+	
 
-		}
+				} else {
+
+					currentPacketLength = totalLengt;
+				}
+				fs.Read (buff, 0, (int)currentPacketLength);
+				io.Write (buff, 0, buff.Length);
+			}
 
 		/// <summary>
 		/// The entry point of the program, where the program control starts and ends.
