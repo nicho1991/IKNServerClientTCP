@@ -67,8 +67,12 @@ namespace tcp
 
 
 			//modtag fil
-			int bytesReceived = 0;
 			FileStream fs = new FileStream(fileName,FileMode.OpenOrCreate,FileAccess.Write);
+
+			Int32 bytesReceived = 0, totalbytedReceived = 0;
+
+			while(bytesReceive
+
 
 			for (int i = 0 ; i < fileSize/BUFSIZE ; i+=BUFSIZE)
 				{
