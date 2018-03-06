@@ -36,37 +36,36 @@ namespace tcp
 			serverSocket.Start();
 			Console.WriteLine("Server started");
 
-			//wait for client
-			clientSocket = serverSocket.AcceptTcpClient();
-			Console.WriteLine ("client connected");
+			while (true) {
+				//wait for client
+				clientSocket = serverSocket.AcceptTcpClient ();
+				Console.WriteLine ("client connected");
 
-			//opretter en stream fra client
-			NetworkStream serverStreamIO = clientSocket.GetStream(); 
-			Console.WriteLine(" >> Accepted connection from client");
+				//opretter en stream fra client
+				NetworkStream serverStreamIO = clientSocket.GetStream (); 
+				Console.WriteLine (" >> Accepted connection from client");
 
-			//modtager filnavn
-			string fileDir = @"/root/Desktop/IKNServerClientTCP/Exercise_6_server/file_server/bin/Debug/files/";
-			string userfile = tcp.LIB.readTextTCP (serverStreamIO);
+				//modtager filnavn
+				string fileDir = @"/root/Desktop/IKNServerClientTCP/Exercise_6_server/file_server/bin/Debug/files/";
+				string userfile = tcp.LIB.readTextTCP (serverStreamIO);
 
-			fileDir += userfile;
-			//check for exsitens af fil
-			long lengthOfFile = tcp.LIB.check_File_Exists(fileDir);
+				fileDir += userfile;
+				//check for exsitens af fil
+				long lengthOfFile = tcp.LIB.check_File_Exists (fileDir);
 
-			if(lengthOfFile != 0)//filen findes
-			{
-				Console.WriteLine("filen findes " + fileDir);
-				//find størrelsen på filen
-				long filesize = new System.IO.FileInfo(fileDir).Length;
-				//send the file
-				sendFile (fileDir, filesize, serverStreamIO);
+				if (lengthOfFile != 0) {//filen findes
+					Console.WriteLine ("filen findes " + fileDir);
+					//find størrelsen på filen
+					long filesize = new System.IO.FileInfo (fileDir).Length;
+					//send the file
+					sendFile (fileDir, filesize, serverStreamIO);
+				} else { //filen exsitere ikke
+					Console.WriteLine ("Filen findes ikke " + fileDir);
+					tcp.LIB.writeTextTCP (serverStreamIO, "filen findes ikke");
+				}
+			
+				clientSocket.Close ();
 			}
-			else //filen exsitere ikke
-			{
-				Console.WriteLine ("Filen findes ikke " + fileDir);
-				tcp.LIB.writeTextTCP (serverStreamIO, "filen findes ikke");
-			}
-
-			clientSocket.Close();
 			serverSocket.Stop();
 		}
 
@@ -102,12 +101,12 @@ namespace tcp
 
 				} else {
 
-					currentPacketLength = totalLengt;
+					currentPacketLength = totalLength;
 				}
 				fs.Read (buff, 0, (int)currentPacketLength);
 				io.Write (buff, 0, buff.Length);
 			}
-
+		}
 		/// <summary>
 		/// The entry point of the program, where the program control starts and ends.
 		/// </summary>
