@@ -8,3 +8,8 @@
 /home/ikn/Desktop/IKNServerClientTCP/Exercise_6_client/Exercise_6_c#/LIB/bin/Debug/LIB.dll
 /home/ikn/Desktop/IKNServerClientTCP/Exercise_6_client/Exercise_6_c#/LIB/obj/Debug/LIB.dll
 /home/ikn/Desktop/IKNServerClientTCP/Exercise_6_client/Exercise_6_c#/LIB/obj/Debug/LIB.dll.mdb
+/root/Desktop/IKNServerClientTCP/Exercise_6_client/Exercise_6_c#/LIB/obj/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/root/Desktop/IKNServerClientTCP/Exercise_6_client/Exercise_6_c#/LIB/bin/Debug/LIB.dll.mdb
+/root/Desktop/IKNServerClientTCP/Exercise_6_client/Exercise_6_c#/LIB/bin/Debug/LIB.dll
+/root/Desktop/IKNServerClientTCP/Exercise_6_client/Exercise_6_c#/LIB/obj/Debug/LIB.dll
+/root/Desktop/IKNServerClientTCP/Exercise_6_client/Exercise_6_c#/LIB/obj/Debug/LIB.dll.mdb

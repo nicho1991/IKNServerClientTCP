@@ -53,39 +53,41 @@ namespace tcp
 		/// </param>
 		private void receiveFile (String fileName, NetworkStream io)
 		{
-			long fileSize = 0;
+			Int64 fileSize = 0;
 			//make byte array
-			Byte[] buff = new Byte[BUFSIZE];
+			Byte[] buff = new byte[BUFSIZE];
 
 			//tell what file we want
 			tcp.LIB.writeTextTCP (io, fileName);
 		
 
 			//modtag fil størrelse
-			fileSize = Int32.Parse( tcp.LIB.readTextTCP(io));
+			fileSize = Int64.Parse( tcp.LIB.readTextTCP(io));
 			Console.WriteLine ("size is " + fileSize);
 
 
 			//modtag fil
 			FileStream fs = new FileStream(fileName,FileMode.OpenOrCreate,FileAccess.Write);
 
-			Int32 bytesReceived = 0, totalbytedReceived = 0;
+			Int32 bytesReceived = 0;
+			Int64 totalbytedReceived = 0;
+			Int64 megaByte = 1048576;
+			while ((bytesReceived = io.Read (buff,0,buff.Length))>0) {
+				totalbytedReceived += bytesReceived;
+				fs.Write (buff, 0, bytesReceived);
+				int percentCompleted = (int)Math.Round(((double)(totalbytedReceived/(double)fileSize)*100));
+				Console.Write("\r{0} ", "Received: " + totalbytedReceived/megaByte + " Mbytes" + " Out of " + fileSize/megaByte + " Mbytes" + " total: " +  percentCompleted + " %");
+			}
+			if (totalbytedReceived > 0) {
+				Console.WriteLine("You have received a file! congratulations!");
+			}
+			else{
+				Console.WriteLine ("Sadly you did not receive a file :( ");
+			}
 
-			while(bytesReceive
 
 
-			for (int i = 0 ; i < fileSize/BUFSIZE ; i+=BUFSIZE)
-				{
-					bytesReceived += io.Read (buff, i, buff.Length);
-					fs.Write (buff,i,BUFSIZE);
-				}
-				bytesReceived += io.Read (buff, bytesReceived , buff.Length);
-				fs.Write (buff, bytesReceived,BUFSIZE);
-
-			//gem fil
-
-
-
+			io.Close ();
 			fs.Close ();
 		}
 
