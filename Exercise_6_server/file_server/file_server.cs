@@ -35,7 +35,6 @@ namespace tcp
 			TcpClient clientSocket = default(TcpClient);
 			serverSocket.Start();
 			Console.WriteLine("Server started");
-
 			while (true) {
 				//wait for client
 				clientSocket = serverSocket.AcceptTcpClient ();
@@ -56,16 +55,18 @@ namespace tcp
 				if (lengthOfFile != 0) {//filen findes
 					Console.WriteLine ("filen findes " + fileDir);
 					//find størrelsen på filen
-					long filesize = new System.IO.FileInfo (fileDir).Length;
+					//long filesize = new System.IO.FileInfo (fileDir).Length;
+					long filesize = LIB.check_File_Exists(fileDir);
 					//send the file
 					sendFile (fileDir, filesize, serverStreamIO);
 				} else { //filen exsitere ikke
 					Console.WriteLine ("Filen findes ikke " + fileDir);
 					tcp.LIB.writeTextTCP (serverStreamIO, "filen findes ikke");
 				}
-			
-				clientSocket.Close ();
+				//clientSocket.Close ();
 			}
+
+			
 			serverSocket.Stop();
 		}
 
@@ -93,7 +94,7 @@ namespace tcp
 			long totalLength = fileSize;
 
 			//write out
-			for (int i = 0; i < fileSize; i += BUFSIZE) {
+			for (int i = 0; i < numberOfPackages; i++) {
 				if (totalLength > BUFSIZE) {
 					currentPacketLength = BUFSIZE;
 					totalLength -= BUFSIZE;
@@ -103,9 +104,15 @@ namespace tcp
 
 					currentPacketLength = totalLength;
 				}
-				fs.Read (buff, 0, (int)currentPacketLength);
-				io.Write (buff, 0, buff.Length);
+
+				byte[] sendingBuffer = new byte[currentPacketLength];
+
+				fs.Read (sendingBuffer, 0, (int)currentPacketLength);
+				io.Write (sendingBuffer, 0, sendingBuffer.Length);
 			}
+
+			fs.Close ();
+			io.Close ();
 		}
 		/// <summary>
 		/// The entry point of the program, where the program control starts and ends.
