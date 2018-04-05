@@ -45,10 +45,10 @@ namespace tcp
 				Console.WriteLine (" >> Accepted connection from client");
 
 				//modtager filnavn
-				string fileDir = @"/root/Desktop/IKNServerClientTCP/Exercise_6_server/file_server/bin/Debug/files/";
+				string fileDir; //= @"/root/Desktop/IKNServerClientTCP/Exercise_6_server/file_server/bin/Debug/files/";
 				string userfile = tcp.LIB.readTextTCP (serverStreamIO);
 
-				fileDir += userfile;
+				fileDir = userfile;
 				//check for exsitens af fil
 				long lengthOfFile = tcp.LIB.check_File_Exists (fileDir);
 
